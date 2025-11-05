@@ -1,0 +1,137 @@
+/* ========== Global Style ========== */
+body {
+  background-color: #f8fafc;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+  min-height: 100vh;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #f8f9fa;
+}
+
+#wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+#sidebar-wrapper {
+  width: 250px;
+  min-height: 100vh;
+}
+
+#page-content-wrapper {
+  flex: 1;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.list-group-item.active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+
+/* Navbar */
+.navbar {
+  background: linear-gradient(90deg, #00bcd4, #0097a7);
+}
+
+.navbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.navbar .btn-light {
+  color: #0097a7;
+  font-weight: 500;
+}
+
+/* Cards */
+.card {
+  border: none;
+  border-radius: 12px;
+}
+
+.card-body {
+  padding: 1.25rem 1.5rem;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #00bcd4;
+  border: none;
+  transition: 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0097a7;
+}
+
+/* Tables */
+.table-primary {
+  background-color: #00bcd4 !important;
+  color: #fff;
+}
+
+/* Footer */
+footer {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Charts */
+.chart-container {
+  width: 100%;
+  height: 320px;
+}
+
+/* Dashboard Layout */
+.sidebar {
+  background-color: #0097a7;
+  color: white;
+  min-height: 100vh;
+  padding: 1.5rem 1rem;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.4rem;
+  transition: 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background-color: #00bcd4;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+h4, h5 {
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    min-height: auto;
+  }
+}

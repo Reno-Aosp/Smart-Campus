@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mahasiswa | Admin</title>
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="d-flex">
+    <nav class="bg-info text-white p-3 vh-100" style="width: 250px;">
+      <h4 class="fw-bold mb-4">SmartCampus</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="dashboard.html" class="nav-link text-white">🏠 Dashboard</a></li>
+        <li class="nav-item mb-2"><a href="mahasiswa.html" class="nav-link text-white">🎓 Mahasiswa</a></li>
+        <li class="nav-item mb-2"><a href="dosen.html" class="nav-link text-white">👨‍🏫 Dosen</a></li>
+        <li class="nav-item mb-2"><a href="matakuliah.html" class="nav-link text-white">📚 Mata Kuliah</a></li>
+        <li class="nav-item mb-2"><a href="laporan.html" class="nav-link text-white">📊 Laporan</a></li>
+      </ul>
+      <div class="mt-auto">
+        <a href="../index.html" class="btn btn-light w-100">Logout</a>
+      </div>
+    </nav>
+
+    <main class="flex-grow-1 bg-light p-4">
+      <div class="container-fluid">
+        <h3 class="fw-bold text-info mb-4">🎓 Mahasiswa</h3>
+        <p>Kelola data mahasiswa di sini.</p>
+
+        <!-- Tombol tambah -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold">Daftar Mahasiswa</h5>
+          <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tambahMahasiswaModal">
+            <i class="fa-solid fa-plus me-1"></i> Tambah Mahasiswa
+          </button>
+        </div>
+
+        <!-- Tabel Mahasiswa -->
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle">
+                <thead class="table-light text-center">
+                  <tr>
+                    <th>No</th>
+                    <th>NIM</th>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Prodi</th>
+                    <th>Email</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center">1</td>
+                    <td>3122500012</td>
+                    <td>Muhammad Rozaq Ma’ruf</td>
+                    <td>TI-3A</td>
+                    <td>Teknik Informatika</td>
+                    <td>rozaq@example.com</td>
+                    <td class="text-center">
+                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
+                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-center">2</td>
+                    <td>3122500013</td>
+                    <td>Siti Rahma</td>
+                    <td>TI-3B</td>
+                    <td>Teknik Informatika</td>
+                    <td>rahma@example.com</td>
+                    <td class="text-center">
+                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
+                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Tambah Mahasiswa -->
+        <div class="modal fade" id="tambahMahasiswaModal" tabindex="-1" aria-labelledby="tambahMahasiswaLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="tambahMahasiswaLabel">Tambah Mahasiswa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="formTambahMahasiswa">
+                  <div class="mb-3">
+                    <label class="form-label">NIM</label>
+                    <input type="text" class="form-control" placeholder="Masukkan NIM">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" class="form-control" placeholder="Masukkan nama">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Kelas</label>
+                    <input type="text" class="form-control" placeholder="Contoh: TI-3A">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Program Studi</label>
+                    <select class="form-select">
+                      <option selected disabled>Pilih Prodi</option>
+                      <option>Teknik Informatika</option>
+                      <option>Sistem Informasi</option>
+                      <option>Teknik Komputer</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="Masukkan email">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary">Simpan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

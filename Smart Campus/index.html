@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartCampus | Pilih Peran</title>
+  <link href="assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #00bcd4, #0097a7);
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-card h2 {
+      margin-bottom: 20px;
+      color: #00bcd4;
+      font-weight: 600;
+    }
+
+    .role-btn {
+      display: block;
+      width: 100%;
+      background: #00bcd4;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .role-btn:hover {
+      background: #0097a7;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2>SmartCampus</h2>
+    <p>Pilih peran untuk masuk ke sistem</p>
+
+    <button class="role-btn" onclick="goTo('admin')">Masuk sebagai Admin</button>
+    <button class="role-btn" onclick="goTo('dosen')">Masuk sebagai Dosen</button>
+    <button class="role-btn" onclick="goTo('mahasiswa')">Masuk sebagai Mahasiswa</button>
+
+    <footer>&copy; 2025 SmartCampus</footer>
+  </div>
+
+  <script>
+    function goTo(role) {
+      // Arahkan ke halaman login sesuai peran
+      switch (role) {
+        case "admin":
+          window.location.href = "admin/login.html";
+          break;
+        case "dosen":
+          window.location.href = "dosen/login.html";
+          break;
+        case "mahasiswa":
+          window.location.href = "mahasiswa/login.html";
+          break;
+      }
+    }
+  </script>
+</body>
+</html>

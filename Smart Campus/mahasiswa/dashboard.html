@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Mahasiswa | SmartCampus</title>
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="d-flex">
+    <nav class="sidebar bg-primary text-white p-3 vh-100">
+      <h4 class="text-center mb-4">SmartCampus</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a href="dashboard.html" class="nav-link active text-white fw-bold">🏠 Dashboard</a></li>
+        <li class="nav-item"><a href="jadwal.html" class="nav-link text-white">📅 Jadwal</a></li>
+        <li class="nav-item"><a href="absensi.html" class="nav-link text-white">🗓 Absensi</a></li>
+        <li class="nav-item"><a href="nilai.html" class="nav-link text-white">📊 Nilai</a></li>
+      </ul>
+      <hr />
+      <a href="../index.html" class="btn btn-light w-100">Keluar</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      <h3 class="mb-4">Dashboard Mahasiswa</h3>
+      <p>Selamat datang di dashboard mahasiswa.</p>
+
+      <div class="row g-4 mt-4">
+        <div class="col-md-4">
+          <div class="card text-center p-4">
+            <div class="card-icon mb-2">📅</div>
+            <h5>Jadwal Hari Ini</h5>
+            <p class="text-muted mb-1">Pemrograman Web</p>
+            <small class="text-muted">08.00 - 09.40 | Ruang D203</small>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center p-4">
+            <div class="card-icon mb-2">📝</div>
+            <h5>Kehadiran</h5>
+            <h3 class="fw-bold text-primary">95%</h3>
+            <small class="text-muted">Semester ini</small>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center p-4">
+            <div class="card-icon mb-2">📊</div>
+            <h5>Nilai Rata-rata</h5>
+            <h3 class="fw-bold text-primary">88</h3>
+            <small class="text-muted">Semester Ganjil 2025</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-5 shadow-sm">
+        <div class="card-body">
+          <h5 class="text-primary mb-3">Pengumuman Terbaru</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">📢 UTS akan dilaksanakan mulai tanggal 20 November 2025.</li>
+            <li class="list-group-item">🎓 Seminar hasil wajib diikuti untuk mata kuliah IoT minggu depan.</li>
+            <li class="list-group-item">📅 Libur nasional pada tanggal 10 November 2025.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dosen | Admin</title>
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <nav class="bg-info text-white p-3 vh-100" style="width: 250px;">
+      <h4 class="fw-bold mb-4">SmartCampus</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="dashboard.html" class="nav-link text-white">🏠 Dashboard</a></li>
+        <li class="nav-item mb-2"><a href="mahasiswa.html" class="nav-link text-white">🎓 Mahasiswa</a></li>
+        <li class="nav-item mb-2"><a href="dosen.html" class="nav-link text-white">👨‍🏫 Dosen</a></li>
+        <li class="nav-item mb-2"><a href="matakuliah.html" class="nav-link text-white">📚 Mata Kuliah</a></li>
+        <li class="nav-item mb-2"><a href="laporan.html" class="nav-link text-white">📊 Laporan</a></li>
+      </ul>
+      <div class="mt-auto">
+        <a href="../index.html" class="btn btn-light w-100">Logout</a>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="flex-grow-1 bg-light p-4">
+      <div class="container-fluid">
+        <h3 class="fw-bold text-info mb-4">👨‍🏫 Dosen</h3>
+        <p>Kelola data dosen di sini.</p>
+
+        <!-- Tombol tambah -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold">Daftar Dosen</h5>
+          <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tambahDosenModal">
+            <i class="fa-solid fa-plus me-1"></i> Tambah Dosen
+          </button>
+        </div>
+
+        <!-- Tabel Dosen -->
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle">
+                <thead class="table-light text-center">
+                  <tr>
+                    <th>No</th>
+                    <th>NIP</th>
+                    <th>Nama</th>
+                    <th>Mata Kuliah</th>
+                    <th>Email</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center">1</td>
+                    <td>197812312022031001</td>
+                    <td>Dr. Budi Santoso</td>
+                    <td>Pemrograman Web</td>
+                    <td>budi.santoso@poli.example.com</td>
+                    <td class="text-center">
+                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
+                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-center">2</td>
+                    <td>198902202019021002</td>
+                    <td>Sri Wulandari, M.Kom</td>
+                    <td>Basis Data Lanjut</td>
+                    <td>sri.wulandari@poli.example.com</td>
+                    <td class="text-center">
+                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
+                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Tambah Dosen -->
+        <div class="modal fade" id="tambahDosenModal" tabindex="-1" aria-labelledby="tambahDosenLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="tambahDosenLabel">Tambah Dosen</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="formTambahDosen">
+                  <div class="mb-3">
+                    <label class="form-label">NIP</label>
+                    <input type="text" class="form-control" placeholder="Masukkan NIP">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" class="form-control" placeholder="Masukkan nama dosen">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Mata Kuliah</label>
+                    <input type="text" class="form-control" placeholder="Masukkan mata kuliah">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="Masukkan email">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary">Simpan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

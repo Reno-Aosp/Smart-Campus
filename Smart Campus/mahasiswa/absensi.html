@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absensi - Mahasiswa | SmartCampus</title>
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="d-flex">
+    <nav class="sidebar bg-primary text-white p-3 vh-100">
+      <h4 class="text-center mb-4">SmartCampus</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a href="dashboard.html" class="nav-link text-white">🏠 Dashboard</a></li>
+        <li class="nav-item"><a href="jadwal.html" class="nav-link text-white">📅 Jadwal</a></li>
+        <li class="nav-item"><a href="absensi.html" class="nav-link active text-white fw-bold">🗓 Absensi</a></li>
+        <li class="nav-item"><a href="nilai.html" class="nav-link text-white">📊 Nilai</a></li>
+      </ul>
+      <hr />
+      <a href="../index.html" class="btn btn-light w-100">Keluar</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      <h3 class="mb-4">Absensi</h3>
+
+      <!-- Form Absen -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="fw-bold text-primary mb-3">🕒 Form Absensi</h5>
+          <form id="formAbsen">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">Mata Kuliah</label>
+                <select class="form-select" id="matkul" required>
+                  <option value="">-- Pilih Mata Kuliah --</option>
+                  <option value="Pemrograman Web">Pemrograman Web</option>
+                  <option value="Basis Data">Basis Data</option>
+                  <option value="Jaringan Komputer">Jaringan Komputer</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Status Kehadiran</label>
+                <select class="form-select" id="status" required>
+                  <option value="">-- Pilih Status --</option>
+                  <option value="Hadir">Hadir</option>
+                  <option value="Izin">Izin</option>
+                  <option value="Sakit">Sakit</option>
+                </select>
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary w-100">Absen Sekarang</button>
+              </div>
+            </div>
+          </form>
+          <div id="notif" class="mt-3 fw-semibold text-success"></div>
+        </div>
+      </div>
+
+      <!-- Tabel Absensi -->
+      <table class="table table-bordered">
+        <thead class="table-primary">
+          <tr>
+            <th>Tanggal</th>
+            <th>Mata Kuliah</th>
+            <th>Status Kehadiran</th>
+          </tr>
+        </thead>
+        <tbody id="tabelAbsensi">
+          <!-- Data absen akan muncul di sini -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const form = document.getElementById('formAbsen');
+    const tabel = document.getElementById('tabelAbsensi');
+    const notif = document.getElementById('notif');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const matkul = document.getElementById('matkul').value;
+      const status = document.getElementById('status').value;
+      const tanggal = new Date().toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      // Tambahkan data ke tabel
+      const row = `
+        <tr>
+          <td>${tanggal}</td>
+          <td>${matkul}</td>
+          <td>${status}</td>
+        </tr>
+      `;
+      tabel.insertAdjacentHTML('beforeend', row);
+
+      notif.textContent = "✅ Absensi berhasil ditambahkan!";
+      form.reset();
+
+      // Hilangkan notifikasi setelah 3 detik
+      setTimeout(() => notif.textContent = "", 3000);
+    });
+  </script>
+</body>
+</html>

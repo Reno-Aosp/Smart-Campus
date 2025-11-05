@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Dosen | SmartCampus</title>
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="d-flex">
+    <nav class="sidebar bg-primary text-white p-3 vh-100">
+      <h4 class="text-center mb-4">SmartCampus</h4>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a href="dashboard.html" class="nav-link active text-white fw-bold">🏠 Dashboard</a></li>
+        <li class="nav-item"><a href="absensi.html" class="nav-link text-white">🕓 Absensi</a></li>
+        <li class="nav-item"><a href="nilai.html" class="nav-link text-white">🧾 Nilai</a></li>
+        <li class="nav-item"><a href="laporan.html" class="nav-link text-white">📊 Laporan</a></li>
+      </ul>
+      <hr />
+      <a href="../index.html" class="btn btn-light w-100">Keluar</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+      <h3 class="mb-4">Dashboard Dosen</h3>
+      <p>Selamat datang di dashboard dosen.</p>
+
+      <!-- Statistik -->
+      <div class="row g-4 mt-4">
+        <div class="col-md-3">
+          <div class="card text-center p-4">
+            <div class="card-icon mb-2">🏫</div>
+            <h5>Total Kelas</h5>
+            <h3 class="fw-bold text-primary">5</h3>
+            <small class="text-muted">Semester ini</small>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card text-center p-4">
+            <div class="card-icon mb-2">👨‍🎓</div>
+            <h5>Jumlah Mahasiswa</h5>
+            <h3 class="fw-bold text-primary">120</h3>
+            <small class="text-muted">Aktif dibimbing</small>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card text-center p-4">
+            <div class="card-icon mb-2">📈</div>
+            <h5>Rata-rata Kehadiran</h5>
+            <h3 class="fw-bold text-primary">93%</h3>
+            <small class="text-muted">Semester ini</small>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card text-center p-4">
+            <div class="card-icon mb-2">📚</div>
+            <h5>Rata-rata Nilai</h5>
+            <h3 class="fw-bold text-primary">88</h3>
+            <small class="text-muted">Mahasiswa dibimbing</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daftar Kelas -->
+      <div class="card mt-5 shadow-sm">
+        <div class="card-body">
+          <h5 class="text-primary mb-3">Kelas yang Diampu</h5>
+          <table class="table table-bordered align-middle">
+            <thead class="table-primary">
+              <tr>
+                <th>No</th>
+                <th>Mata Kuliah</th>
+                <th>Kelas</th>
+                <th>Jumlah Mahasiswa</th>
+                <th>Jadwal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Basis Data Lanjut</td>
+                <td>TI-3A</td>
+                <td>32</td>
+                <td>Senin, 08.00 - 10.00</td>
+                <td><a href="absensi.html" class="btn btn-sm btn-primary text-white">Lihat</a></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Pemrograman Web</td>
+                <td>TI-3B</td>
+                <td>30</td>
+                <td>Selasa, 10.00 - 12.00</td>
+                <td><a href="nilai.html" class="btn btn-sm btn-primary text-white">Lihat</a></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Jaringan Komputer</td>
+                <td>TI-3A</td>
+                <td>29</td>
+                <td>Rabu, 08.00 - 10.00</td>
+                <td><a href="laporan.html" class="btn btn-sm btn-primary text-white">Lihat</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>

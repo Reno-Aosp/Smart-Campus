@@ -1,13 +1,16 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// config.php
 
-$conn = oci_connect('uas', 'uas', 'localhost:1521/orcl');
-if (!$conn) {
-    $e = oci_error();
-    echo "❌ Koneksi gagal: " . htmlentities($e['message']);
-} else {
-    echo "✅ Koneksi berhasil ke Oracle!";
-    oci_close($conn);
+define('DB_USER', 'uas2');
+define('DB_PASS', 'uas2');
+define('DB_CONN', 'localhost/orcl');
+
+function getOracleConnection() {
+    $conn = oci_connect(DB_USER, DB_PASS, DB_CONN);
+    if (!$conn) {
+        $e = oci_error();
+        die("Koneksi gagal: " . $e['message']);
+    }
+    return $conn;
 }
 ?>

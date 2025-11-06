@@ -31,7 +31,7 @@
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      const res = await fetch("http://localhost/api/login.api", {
+      const res = await fetch("http://localhost/Smart-Campus/Smart Campus/api/login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, role: "dosen" }),

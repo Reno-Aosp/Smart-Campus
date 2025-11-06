@@ -28,7 +28,6 @@
         <h3 class="fw-bold text-info mb-4">🎓 Mahasiswa</h3>
         <p>Kelola data mahasiswa di sini.</p>
 
-        <!-- Tombol tambah -->
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold">Daftar Mahasiswa</h5>
           <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tambahMahasiswaModal">
@@ -36,7 +35,6 @@
           </button>
         </div>
 
-        <!-- Tabel Mahasiswa -->
         <div class="card shadow-sm border-0">
           <div class="card-body">
             <div class="table-responsive">
@@ -95,19 +93,19 @@
                 <form id="formTambahMahasiswa">
                   <div class="mb-3">
                     <label class="form-label">NIM</label>
-                    <input type="text" class="form-control" placeholder="Masukkan NIM">
+                    <input type="text" id="nim" class="form-control" placeholder="Masukkan NIM" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Nama Lengkap</label>
-                    <input type="text" class="form-control" placeholder="Masukkan nama">
+                    <input type="text" id="nama" class="form-control" placeholder="Masukkan nama" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Kelas</label>
-                    <input type="text" class="form-control" placeholder="Contoh: TI-3A">
+                    <input type="text" id="kelas" class="form-control" placeholder="Contoh: TI-3A" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Program Studi</label>
-                    <select class="form-select">
+                    <select id="prodi" class="form-select" required>
                       <option selected disabled>Pilih Prodi</option>
                       <option>Teknik Informatika</option>
                       <option>Sistem Informasi</option>
@@ -116,13 +114,13 @@
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control" placeholder="Masukkan email">
+                    <input type="email" id="email" class="form-control" placeholder="Masukkan email" required>
                   </div>
                 </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Simpan</button>
+                <button type="button" class="btn btn-primary" id="btnSimpanMahasiswa">Simpan</button>
               </div>
             </div>
           </div>
@@ -130,7 +128,35 @@
       </div>
     </main>
   </div>
-
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
   <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+document.getElementById("btnSimpanMahasiswa").addEventListener("click", async () => {
+  const form = document.getElementById("formTambahMahasiswa");
+  const data = {
+    nim: form.querySelector("input[placeholder='Masukkan NIM']").value.trim(),
+    nama: form.querySelector("input[placeholder='Masukkan nama']").value.trim(),
+    kelas: form.querySelector("input[placeholder='Contoh: TI-3A']").value.trim(),
+    prodi: form.querySelector("select").value.trim(),
+    email: form.querySelector("input[placeholder='Masukkan email']").value.trim()
+  };
+
+  try {
+    const res = await fetch("http://localhost/Smart-Campus/Smart Campus/api/tambah_mahasiswa.php", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    alert(result.message);
+    if (result.success) location.reload();
+  } catch (err) {
+    alert("Terjadi kesalahan koneksi: " + err);
+  }
+});
+</script>
+
 </body>
 </html>

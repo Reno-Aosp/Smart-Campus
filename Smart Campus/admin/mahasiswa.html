@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mahasiswa | Admin</title>
-  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../assets/css/style.css" rel="stylesheet" />
 </head>
 <body>
   <div class="d-flex">
+    <!-- Sidebar -->
     <nav class="bg-info text-white p-3 vh-100" style="width: 250px;">
       <h4 class="fw-bold mb-4">SmartCampus</h4>
       <ul class="nav flex-column">
         <li class="nav-item mb-2"><a href="dashboard.html" class="nav-link text-white">🏠 Dashboard</a></li>
-        <li class="nav-item mb-2"><a href="mahasiswa.html" class="nav-link text-white">🎓 Mahasiswa</a></li>
+        <li class="nav-item mb-2"><a href="mahasiswa.html" class="nav-link text-white active fw-bold">🎓 Mahasiswa</a></li>
         <li class="nav-item mb-2"><a href="dosen.html" class="nav-link text-white">👨‍🏫 Dosen</a></li>
         <li class="nav-item mb-2"><a href="matakuliah.html" class="nav-link text-white">📚 Mata Kuliah</a></li>
         <li class="nav-item mb-2"><a href="laporan.html" class="nav-link text-white">📊 Laporan</a></li>
@@ -23,6 +24,7 @@
       </div>
     </nav>
 
+    <!-- Main content -->
     <main class="flex-grow-1 bg-light p-4">
       <div class="container-fluid">
         <h3 class="fw-bold text-info mb-4">🎓 Mahasiswa</h3>
@@ -50,31 +52,7 @@
                     <th>Aksi</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td class="text-center">1</td>
-                    <td>3122500012</td>
-                    <td>Muhammad Rozaq Ma’ruf</td>
-                    <td>TI-3A</td>
-                    <td>Teknik Informatika</td>
-                    <td>rozaq@example.com</td>
-                    <td class="text-center">
-                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
-                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="text-center">2</td>
-                    <td>3122500013</td>
-                    <td>Siti Rahma</td>
-                    <td>TI-3B</td>
-                    <td>Teknik Informatika</td>
-                    <td>rahma@example.com</td>
-                    <td class="text-center">
-                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
-                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                  </tr>
+                <tbody id="tableMahasiswa">
                 </tbody>
               </table>
             </div>
@@ -92,12 +70,20 @@
               <div class="modal-body">
                 <form id="formTambahMahasiswa">
                   <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Masukkan username" required>
+                  </div>
+                  <div class="mb-3">
                     <label class="form-label">NIM</label>
                     <input type="text" id="nim" class="form-control" placeholder="Masukkan NIM" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Nama Lengkap</label>
                     <input type="text" id="nama" class="form-control" placeholder="Masukkan nama" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Kelas</label>
@@ -128,35 +114,105 @@
       </div>
     </main>
   </div>
-  
+
+  <!-- JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
   <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <script>
-document.getElementById("btnSimpanMahasiswa").addEventListener("click", async () => {
-  const form = document.getElementById("formTambahMahasiswa");
-  const data = {
-    nim: form.querySelector("input[placeholder='Masukkan NIM']").value.trim(),
-    nama: form.querySelector("input[placeholder='Masukkan nama']").value.trim(),
-    kelas: form.querySelector("input[placeholder='Contoh: TI-3A']").value.trim(),
-    prodi: form.querySelector("select").value.trim(),
-    email: form.querySelector("input[placeholder='Masukkan email']").value.trim()
-  };
+async function loadMahasiswa() {
+  const tableBody = document.getElementById("tableMahasiswa");
+  tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-secondary">Memuat data...</td></tr>`;
 
   try {
-    const res = await fetch("http://localhost/Smart-Campus/Smart Campus/api/tambah_mahasiswa.php", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(data)
-    });
+    const res = await fetch("http://localhost/Smart-Campus/Smart%20Campus/api/get_mahasiswa.php");
     const result = await res.json();
-    alert(result.message);
-    if (result.success) location.reload();
+
+    if (!result.success) {
+      tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Gagal memuat data mahasiswa</td></tr>`;
+      return;
+    }
+
+    const data = result.data;
+    if (data.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="7" class="text-center">Belum ada data mahasiswa</td></tr>`;
+      return;
+    }
+
+    tableBody.innerHTML = "";
+    data.forEach((mhs, i) => {
+      const nim = mhs.nim || mhs.NIM || "-";
+      const username = mhs.username || mhs.USERNAME || "-";
+      const email = mhs.email || mhs.EMAIL || "-";
+      const kelas = mhs.kelas || mhs.KELAS || "-";
+      const prodi = mhs.prodi || mhs.PRODI || "-";
+
+      tableBody.insertAdjacentHTML(
+        "beforeend",
+        `
+        <tr>
+          <td class="text-center">${i + 1}</td>
+          <td>${nim}</td>
+          <td>${username}</td>
+          <td>${kelas}</td>
+          <td>${prodi}</td>
+          <td>${email}</td>
+          <td class="text-center">
+            <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>`
+      );
+    });
   } catch (err) {
-    alert("Terjadi kesalahan koneksi: " + err);
+    console.error("Error:", err);
+    tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Terjadi kesalahan koneksi</td></tr>`;
   }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadMahasiswa();
+
+  document.getElementById("btnSimpanMahasiswa").addEventListener("click", async () => {
+    const form = document.getElementById("formTambahMahasiswa");
+    const data = {
+      username: form.querySelector("#username").value.trim(),
+      nim: form.querySelector("#nim").value.trim(),
+      nama: form.querySelector("#nama").value.trim(),
+      password: form.querySelector("#password").value.trim(),
+      email: form.querySelector("#email").value.trim(),
+      kelas: form.querySelector("#kelas").value.trim(),
+      prodi: form.querySelector("#prodi").value.trim()
+    };
+
+    if (!data.username || !data.password || !data.email) {
+      alert("Username, Password, dan Email wajib diisi!");
+      return;
+    }
+
+    try {
+      const url = "http://localhost/Smart-Campus/Smart%20Campus/api/tambah_mahasiswa.php";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const text = await res.text();
+      let result;
+      try { result = JSON.parse(text); }
+      catch { alert("Respon tidak valid: " + text); return; }
+
+      alert(result.message || "Data berhasil dikirim");
+      if (result.success) {
+        document.getElementById("tambahMahasiswaModal").querySelector(".btn-close").click();
+        loadMahasiswa();
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan koneksi: " + err.message);
+    }
+  });
 });
 </script>
-
 </body>
 </html>

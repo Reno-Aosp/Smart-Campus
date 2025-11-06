@@ -71,23 +71,23 @@
                 <form id="formTambahMahasiswa">
                   <div class="mb-3">
                     <label class="form-label">Username</label>
-                    <input type="text" id="username" class="form-control" placeholder="Masukkan username" required>
+                    <input type="text" id="username" class="form-control" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">NIM</label>
-                    <input type="text" id="nim" class="form-control" placeholder="Masukkan NIM" required>
+                    <input type="text" id="nim" class="form-control" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Nama Lengkap</label>
-                    <input type="text" id="nama" class="form-control" placeholder="Masukkan nama" required>
+                    <input type="text" id="nama" class="form-control" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
+                    <input type="password" id="password" class="form-control" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Kelas</label>
-                    <input type="text" id="kelas" class="form-control" placeholder="Contoh: TI-3A" required>
+                    <input type="text" id="kelas" class="form-control" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Program Studi</label>
@@ -100,7 +100,7 @@
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" id="email" class="form-control" placeholder="Masukkan email" required>
+                    <input type="email" id="email" class="form-control" required>
                   </div>
                 </form>
               </div>
@@ -111,6 +111,48 @@
             </div>
           </div>
         </div>
+
+        <!-- Modal Edit Mahasiswa -->
+        <div class="modal fade" id="editMahasiswaModal" tabindex="-1" aria-labelledby="editMahasiswaLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title" id="editMahasiswaLabel">Edit Mahasiswa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <form id="formEditMahasiswa">
+                  <input type="hidden" id="editUserId">
+                  <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="editUsername" class="form-control" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="editEmail" class="form-control" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Kelas</label>
+                    <input type="text" id="editKelas" class="form-control" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Program Studi</label>
+                    <select id="editProdi" class="form-select" required>
+                      <option>Teknik Informatika</option>
+                      <option>Sistem Informasi</option>
+                      <option>Teknik Komputer</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button class="btn btn-warning" id="btnUpdateMahasiswa">Simpan Perubahan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
@@ -120,6 +162,8 @@
   <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <script>
+let mahasiswaList = [];
+
 async function loadMahasiswa() {
   const tableBody = document.getElementById("tableMahasiswa");
   tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-secondary">Memuat data...</td></tr>`;
@@ -133,33 +177,27 @@ async function loadMahasiswa() {
       return;
     }
 
-    const data = result.data;
-    if (data.length === 0) {
+    mahasiswaList = result.data;
+    if (mahasiswaList.length === 0) {
       tableBody.innerHTML = `<tr><td colspan="7" class="text-center">Belum ada data mahasiswa</td></tr>`;
       return;
     }
 
     tableBody.innerHTML = "";
-    data.forEach((mhs, i) => {
-      const nim = mhs.nim || mhs.NIM || "-";
-      const username = mhs.username || mhs.USERNAME || "-";
-      const email = mhs.email || mhs.EMAIL || "-";
-      const kelas = mhs.kelas || mhs.KELAS || "-";
-      const prodi = mhs.prodi || mhs.PRODI || "-";
-
+    mahasiswaList.forEach((mhs, i) => {
       tableBody.insertAdjacentHTML(
         "beforeend",
         `
         <tr>
           <td class="text-center">${i + 1}</td>
-          <td>${nim}</td>
-          <td>${username}</td>
-          <td>${kelas}</td>
-          <td>${prodi}</td>
-          <td>${email}</td>
+          <td>${mhs.nim || "-"}</td>
+          <td>${mhs.username || "-"}</td>
+          <td>${mhs.kelas || "-"}</td>
+          <td>${mhs.prodi || "-"}</td>
+          <td>${mhs.email || "-"}</td>
           <td class="text-center">
-            <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
-            <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+            <button class="btn btn-warning btn-sm me-1" onclick="editMahasiswa(${mhs.user_id})"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-danger btn-sm" onclick="hapusMahasiswa(${mhs.user_id})"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>`
       );
@@ -169,6 +207,56 @@ async function loadMahasiswa() {
     tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Terjadi kesalahan koneksi</td></tr>`;
   }
 }
+
+async function hapusMahasiswa(id) {
+  if (!confirm("Yakin ingin menghapus mahasiswa ini?")) return;
+
+  const res = await fetch("http://localhost/Smart-Campus/Smart%20Campus/api/delete_mahasiswa.php", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ user_id: id })
+  });
+
+  const result = await res.json();
+  alert(result.message);
+  if (result.success) loadMahasiswa();
+}
+
+function editMahasiswa(id) {
+  const mhs = mahasiswaList.find(m => m.user_id == id);
+  if (!mhs) return;
+
+  document.getElementById("editUserId").value = mhs.user_id;
+  document.getElementById("editUsername").value = mhs.username;
+  document.getElementById("editEmail").value = mhs.email;
+  document.getElementById("editKelas").value = mhs.kelas;
+  document.getElementById("editProdi").value = mhs.prodi;
+
+  new bootstrap.Modal(document.getElementById("editMahasiswaModal")).show();
+}
+
+document.getElementById("btnUpdateMahasiswa").addEventListener("click", async () => {
+  const data = {
+    user_id: document.getElementById("editUserId").value,
+    username: document.getElementById("editUsername").value.trim(),
+    email: document.getElementById("editEmail").value.trim(),
+    kelas: document.getElementById("editKelas").value.trim(),
+    prodi: document.getElementById("editProdi").value.trim()
+  };
+
+  const res = await fetch("http://localhost/Smart-Campus/Smart%20Campus/api/update_mahasiswa.php", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  alert(result.message);
+  if (result.success) {
+    loadMahasiswa();
+    bootstrap.Modal.getInstance(document.getElementById("editMahasiswaModal")).hide();
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   loadMahasiswa();
@@ -190,29 +278,21 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    try {
-      const url = "http://localhost/Smart-Campus/Smart%20Campus/api/tambah_mahasiswa.php";
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
+    const url = "http://localhost/Smart-Campus/Smart%20Campus/api/tambah_mahasiswa.php";
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
 
-      const text = await res.text();
-      let result;
-      try { result = JSON.parse(text); }
-      catch { alert("Respon tidak valid: " + text); return; }
-
-      alert(result.message || "Data berhasil dikirim");
-      if (result.success) {
-        document.getElementById("tambahMahasiswaModal").querySelector(".btn-close").click();
-        loadMahasiswa();
-      }
-    } catch (err) {
-      alert("Terjadi kesalahan koneksi: " + err.message);
+    const result = await res.json();
+    alert(result.message);
+    if (result.success) {
+      document.getElementById("tambahMahasiswaModal").querySelector(".btn-close").click();
+      loadMahasiswa();
     }
   });
 });
-</script>
+  </script>
 </body>
 </html>

@@ -16,7 +16,7 @@
       <ul class="nav flex-column">
         <li class="nav-item mb-2"><a href="dashboard.html" class="nav-link text-white">🏠 Dashboard</a></li>
         <li class="nav-item mb-2"><a href="mahasiswa.html" class="nav-link text-white">🎓 Mahasiswa</a></li>
-        <li class="nav-item mb-2"><a href="dosen.html" class="nav-link text-white">👨‍🏫 Dosen</a></li>
+        <li class="nav-item mb-2"><a href="dosen.html" class="nav-link text-white active fw-bold">👨‍🏫 Dosen</a></li>
         <li class="nav-item mb-2"><a href="matakuliah.html" class="nav-link text-white">📚 Mata Kuliah</a></li>
         <li class="nav-item mb-2"><a href="laporan.html" class="nav-link text-white">📊 Laporan</a></li>
       </ul>
@@ -54,29 +54,8 @@
                     <th>Aksi</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td class="text-center">1</td>
-                    <td>197812312022031001</td>
-                    <td>Dr. Budi Santoso</td>
-                    <td>Pemrograman Web</td>
-                    <td>budi.santoso@poli.example.com</td>
-                    <td class="text-center">
-                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
-                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="text-center">2</td>
-                    <td>198902202019021002</td>
-                    <td>Sri Wulandari, M.Kom</td>
-                    <td>Basis Data Lanjut</td>
-                    <td>sri.wulandari@poli.example.com</td>
-                    <td class="text-center">
-                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
-                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                  </tr>
+                <tbody id="tableDosen">
+                  <tr><td colspan="6" class="text-center text-secondary">Memuat data...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -95,25 +74,29 @@
                 <form id="formTambahDosen">
                   <div class="mb-3">
                     <label class="form-label">NIP</label>
-                    <input type="text" class="form-control" placeholder="Masukkan NIP">
+                    <input type="text" id="nip" class="form-control" placeholder="Masukkan NIP" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Nama Lengkap</label>
-                    <input type="text" class="form-control" placeholder="Masukkan nama dosen">
+                    <input type="text" id="nama" class="form-control" placeholder="Masukkan nama dosen" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Mata Kuliah</label>
-                    <input type="text" class="form-control" placeholder="Masukkan mata kuliah">
+                    <input type="text" id="matakuliah" class="form-control" placeholder="Masukkan mata kuliah" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control" placeholder="Masukkan email">
+                    <input type="email" id="email" class="form-control" placeholder="Masukkan email" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
                   </div>
                 </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Simpan</button>
+                <button type="button" class="btn btn-primary" id="btnSimpanDosen">Simpan</button>
               </div>
             </div>
           </div>
@@ -123,5 +106,97 @@
   </div>
 
   <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+const API_BASE = "http://localhost/Smart-Campus/Smart%20Campus/api";
+
+async function loadDosen() {
+  const table = document.getElementById("tableDosen");
+  table.innerHTML = `<tr><td colspan="6" class="text-center text-secondary">Memuat data...</td></tr>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/get_dosen.php`);
+    const result = await res.json();
+
+    if (!result.success) {
+      table.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Gagal memuat data</td></tr>`;
+      return;
+    }
+
+    const data = result.data;
+    if (data.length === 0) {
+      table.innerHTML = `<tr><td colspan="6" class="text-center">Belum ada data dosen</td></tr>`;
+      return;
+    }
+
+    table.innerHTML = "";
+    data.forEach((dosen, i) => {
+      table.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td class="text-center">${i + 1}</td>
+          <td>${dosen.nip}</td>
+          <td>${dosen.nama}</td>
+          <td>${dosen.matakuliah}</td>
+          <td>${dosen.email}</td>
+          <td class="text-center">
+            <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `);
+    });
+  } catch (err) {
+    table.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Terjadi kesalahan koneksi</td></tr>`;
+    console.error(err);
+  }
+}
+
+document.getElementById("btnSimpanDosen").addEventListener("click", async () => {
+  const form = document.getElementById("formTambahDosen");
+  const data = {
+    nip: form.querySelector("#nip").value.trim(),
+    nama: form.querySelector("#nama").value.trim(),
+    matakuliah: form.querySelector("#matakuliah").value.trim(),
+    email: form.querySelector("#email").value.trim(),
+    password: form.querySelector("#password") ? form.querySelector("#password").value.trim() : ''
+  };
+
+  if (!data.nip || !data.nama || !data.email || !data.matakuliah) {
+    alert("Semua kolom wajib diisi!");
+    return;
+  }
+
+  try {
+    const url = "http://localhost/Smart-Campus/Smart%20Campus/api/tambah_dosen.php"; // pakai encoded path
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const text = await res.text();
+    console.log("Raw response:", text);
+
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch (e) {
+      // bukan JSON — tampilkan ke user untuk debugging
+      alert("Server mengembalikan respon tidak valid:\n\n" + text);
+      return;
+    }
+
+    alert(result.message || "Selesai");
+    if (result.success) {
+      document.querySelector("#tambahDosenModal .btn-close").click();
+      form.reset();
+      loadDosen();
+    }
+  } catch (err) {
+    alert("Terjadi kesalahan koneksi: " + err.message);
+    console.error(err);
+  }
+});
+</script>
 </body>
 </html>

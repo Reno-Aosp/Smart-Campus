@@ -1,19 +1,13 @@
 <?php
-// Data koneksi
-$username = 'uas';
-$password = 'uas';
-$connection_string = 'localhost:1521/orcl';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Coba koneksi
-$conn = oci_connect($username, $password, $connection_string);
-
+$conn = oci_connect('uas', 'uas', 'localhost:1521/orcl');
 if (!$conn) {
     $e = oci_error();
-    echo "Koneksi gagal: " . htmlentities($e['message']);
+    echo "❌ Koneksi gagal: " . htmlentities($e['message']);
 } else {
-    echo "Koneksi berhasil ke Oracle Database!";
+    echo "✅ Koneksi berhasil ke Oracle!";
+    oci_close($conn);
 }
-
-// Tutup koneksi
-// oci_close($conn);
 ?>

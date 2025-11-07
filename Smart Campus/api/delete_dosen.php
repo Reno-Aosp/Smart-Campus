@@ -1,15 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json");
-require_once __DIR__ . "/config.php";
-
-$input = json_decode(file_get_contents("php://input"), true);
-$nip = $input["nip"] ?? null;
-
-if (!$nip) {
-    echo json_encode(["success" => false, "message" => "NIP tidak dikirim"]);
-    exit;
-}
+header("Content-Type: application/json; charset=utf-8");
+require_once "config.php";
 
 $conn = getOracleConnection();
 if (!$conn) {
@@ -17,16 +9,25 @@ if (!$conn) {
     exit;
 }
 
-// Gunakan kolom NIM karena di tabel kamu tidak ada kolom NIP
-$sql = "DELETE FROM USERS WHERE NIM = :nip AND ROLE = 'dosen'";
-$stid = oci_parse($conn, $sql);
-oci_bind_by_name($stid, ":nip", $nip);
+$raw = file_get_contents("php://input");
+$data = json_decode($raw, true);
+$user_id = $data['user_id'] ?? '';
 
-if (oci_execute($stid, OCI_COMMIT_ON_SUCCESS)) {
+if ($user_id === '') {
+    echo json_encode(["success" => false, "message" => "User ID tidak diberikan"]);
+    exit;
+}
+
+$sql = "DELETE FROM USERS WHERE USER_ID = :user_id AND ROLE = 'dosen'";
+$stid = oci_parse($conn, $sql);
+oci_bind_by_name($stid, ":user_id", $user_id);
+
+if (oci_execute($stid, OCI_NO_AUTO_COMMIT)) {
+    oci_commit($conn);
     echo json_encode(["success" => true, "message" => "Dosen berhasil dihapus"]);
 } else {
-    $e = oci_error($stid);
-    echo json_encode(["success" => false, "message" => "Gagal menghapus dosen", "error" => $e['message']]);
+    $err = oci_error($stid);
+    echo json_encode(["success" => false, "message" => "Gagal menghapus: " . $err['message']]);
 }
 
 oci_free_statement($stid);

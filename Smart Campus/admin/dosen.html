@@ -71,7 +71,8 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <form id="formTambahDosen">
+                <form id="formDosen">
+                  <input type="hidden" id="user_id">
                   <div class="mb-3">
                     <label class="form-label">NIP</label>
                     <input type="text" id="nip" class="form-control" placeholder="Masukkan NIP" required>
@@ -108,167 +109,205 @@
   <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <script>
-const API_BASE = "http://localhost/Smart-Campus/Smart Campus/api";
+const API_BASE = "http://localhost/Smart-Campus/Smart%20Campus/api";
 
-async function loadDosen() {
-  const table = document.getElementById("tableDosen");
-  table.innerHTML = `<tr><td colspan="6" class="text-center text-secondary">Memuat data...</td></tr>`;
-
-  try {
-    const res = await fetch(`${API_BASE}/get_dosen.php?nocache=${Date.now()}`);
-    const result = await res.json();
-
-    if (!result.success) {
-      table.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Gagal memuat data</td></tr>`;
-      return;
-    }
-
-    const data = result.data;
-    if (!data || data.length === 0) {
-      table.innerHTML = `<tr><td colspan="6" class="text-center">Belum ada data dosen</td></tr>`;
-      return;
-    }
-
-    table.innerHTML = "";
-    data.forEach((dosen, i) => {
-      table.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td class="text-center">${i + 1}</td>
-          <td>${dosen.nip ?? '-'}</td>
-          <td>${dosen.nama ?? '-'}</td>
-          <td>${dosen.matakuliah ?? '-'}</td>
-          <td>${dosen.email ?? '-'}</td>
-          <td class="text-center">
-            <button class="btn btn-warning btn-sm me-1" onclick="editDosen('${dosen.nip}')"><i class="fa-solid fa-pen"></i></button>
-            <button class="btn btn-danger btn-sm" onclick="deleteDosen('${dosen.nip}')"><i class="fa-solid fa-trash"></i></button>
-          </td>
-        </tr>
-      `);
+document.addEventListener("DOMContentLoaded", () => {
+  // pasang handler untuk tombol "Tambah Dosen" (agar modal di-reset)
+  const tambahBtn = document.querySelector('[data-bs-target="#tambahDosenModal"]');
+  if (tambahBtn) {
+    tambahBtn.addEventListener("click", () => {
+      resetModalForAdd();
     });
-  } catch (err) {
-    table.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Terjadi kesalahan koneksi</td></tr>`;
-    console.error("Fetch error:", err);
   }
+
+  document.getElementById("btnSimpanDosen").addEventListener("click", simpanDosen);
+
+  loadDosen();
+});
+
+function resetModalForAdd() {
+  const form = document.getElementById("formDosen");
+  form.reset();
+  document.getElementById("user_id").value = "";           // pastikan kosong -> dianggap tambah
+  document.getElementById("tambahDosenLabel").textContent = "Tambah Dosen";
 }
 
-// SIMPAN DOSEN BARU
-async function simpanBaru() {
-  const form = document.getElementById("formTambahDosen");
-  const data = {
-    nip: form.querySelector("#nip").value.trim(),
-    nama: form.querySelector("#nama").value.trim(),
-    matakuliah: form.querySelector("#matakuliah").value.trim(),
-    email: form.querySelector("#email").value.trim(),
-    password: form.querySelector("#password").value.trim()
-  };
+function loadDosen() {
+  fetch(`${API_BASE}/get_dosen.php`)
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("tableDosen");
+      tbody.innerHTML = "";
 
-  if (!data.nip || !data.nama || !data.email || !data.matakuliah || !data.password) {
-    alert("Semua kolom wajib diisi!");
+      if (!data.success || !Array.isArray(data.data) || data.data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-secondary">Tidak ada data dosen</td></tr>`;
+        return;
+      }
+
+      data.data.forEach((dosen, i) => {
+        const tr = document.createElement("tr");
+
+        // kolom no
+        const tdNo = document.createElement("td");
+        tdNo.className = "text-center";
+        tdNo.textContent = i + 1;
+        tr.appendChild(tdNo);
+
+        // NIP
+        const tdNip = document.createElement("td");
+        tdNip.textContent = dosen.nip ?? "-";
+        tr.appendChild(tdNip);
+
+        // Nama
+        const tdNama = document.createElement("td");
+        tdNama.textContent = dosen.username ?? "-";
+        tr.appendChild(tdNama);
+
+        // Mata Kuliah / Prodi
+        const tdMatkul = document.createElement("td");
+        // gunakan prodi jika API mengirim 'prodi', atau 'matakuliah' jika itu nama yang dipakai
+        tdMatkul.textContent = dosen.prodi ?? dosen.matakuliah ?? "-";
+        tr.appendChild(tdMatkul);
+
+        // Email
+        const tdEmail = document.createElement("td");
+        tdEmail.textContent = dosen.email ?? "-";
+        tr.appendChild(tdEmail);
+
+        // Aksi (edit + delete)
+        const tdAksi = document.createElement("td");
+        tdAksi.className = "text-center";
+
+        // Edit button
+        const btnEdit = document.createElement("button");
+        btnEdit.className = "btn btn-warning btn-sm me-1";
+        btnEdit.title = "Edit";
+        btnEdit.innerHTML = '<i class="fa-solid fa-pen"></i>';
+        btnEdit.addEventListener("click", () => {
+          openEditModal(dosen);
+        });
+        tdAksi.appendChild(btnEdit);
+
+        // Delete button
+        const btnDel = document.createElement("button");
+        btnDel.className = "btn btn-danger btn-sm";
+        btnDel.title = "Hapus";
+        btnDel.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        btnDel.addEventListener("click", () => {
+          hapusDosen(dosen.user_id);
+        });
+        tdAksi.appendChild(btnDel);
+
+        tr.appendChild(tdAksi);
+
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(err => {
+      console.error("Error memuat dosen:", err);
+      const tbody = document.getElementById("tableDosen");
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Gagal memuat data</td></tr>`;
+    });
+}
+
+function openEditModal(dosen) {
+  // isi form dengan data dosen, dan set user_id -> sehingga simpan menjadi update
+  document.getElementById("user_id").value = dosen.user_id ?? "";
+  document.getElementById("nip").value = dosen.nip ?? "";
+  document.getElementById("nama").value = dosen.username ?? "";
+  // gunakan prodi atau matakuliah tergantung data API
+  document.getElementById("matakuliah").value = dosen.prodi ?? dosen.matakuliah ?? "";
+  document.getElementById("email").value = dosen.email ?? "";
+  document.getElementById("password").value = ""; // kosongkan password di edit
+  document.getElementById("tambahDosenLabel").textContent = "Edit Dosen";
+
+  // show modal
+  const modalEl = document.getElementById("tambahDosenModal");
+  const modal = new bootstrap.Modal(modalEl);
+  modal.show();
+}
+
+function simpanDosen() {
+  const user_id = document.getElementById("user_id").value.trim();
+  const nip = document.getElementById("nip").value.trim();
+  const nama = document.getElementById("nama").value.trim();
+  const matakuliah = document.getElementById("matakuliah").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!nip || !nama || !email) {
+    alert("Harap lengkapi NIP, Nama, dan Email.");
     return;
   }
 
-  try {
-    const res = await fetch(`${API_BASE}/tambah_dosen.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-    const text = await res.text();
-    console.log("Raw response:", text);
-    const result = JSON.parse(text);
+  // endpoint: tambah atau update
+  const url = user_id ? `${API_BASE}/update_dosen.php` : `${API_BASE}/tambah_dosen.php`;
 
-    alert(result.message || "Selesai");
-    if (result.success) {
-      document.querySelector("#tambahDosenModal .btn-close").click();
-      form.reset();
-      loadDosen();
-    }
-  } catch (err) {
-    alert("Terjadi kesalahan koneksi: " + err.message);
-    console.error(err);
+  // siapkan payload sesuai API (pakai 'prodi' jika backend pakai itu)
+  const payload = user_id
+    ? { user_id, nip, username: nama, email, prodi: matakuliah }     // update (password opsional)
+    : { nip, username: nama, email, prodi: matakuliah, password };  // tambah (password wajib di backend)
+
+  // Jika menambah tapi password kosong -> minta isi
+  if (!user_id && !password) {
+    alert("Password wajib diisi saat menambah dosen.");
+    return;
   }
-}
 
-// EDIT DOSEN
-async function editDosen(nip) {
-  try {
-    const res = await fetch(`${API_BASE}/get_dosen.php?nip=${nip}&nocache=${Date.now()}`);
-    const result = await res.json();
-    if (!result.success || !result.data || result.data.length === 0) {
-      alert("Data dosen tidak ditemukan!");
-      return;
-    }
+  // Jika update dan password kosong, kita boleh tidak mengirim password (backend harus meng-handle)
+  if (user_id && !password) {
+    delete payload.password;
+  } else if (password) {
+    payload.password = password;
+  }
 
-    const dosen = result.data[0];
-    const form = document.getElementById("formTambahDosen");
-
-    form.querySelector("#nip").value = dosen.nip;
-    form.querySelector("#nama").value = dosen.nama;
-    form.querySelector("#matakuliah").value = dosen.matakuliah;
-    form.querySelector("#email").value = dosen.email;
-    form.querySelector("#password").value = "";
-
-    form.querySelector("#nip").setAttribute("readonly", true);
-    document.getElementById("btnSimpanDosen").innerText = "Update";
-
-    document.getElementById("btnSimpanDosen").onclick = async () => {
-      const data = {
-        nip: form.querySelector("#nip").value.trim(),
-        nama: form.querySelector("#nama").value.trim(),
-        matakuliah: form.querySelector("#matakuliah").value.trim(),
-        email: form.querySelector("#email").value.trim(),
-        password: form.querySelector("#password").value.trim()
-      };
-
-      try {
-        const res = await fetch(`${API_BASE}/update_dosen.php`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-        const result = await res.json();
-        alert(result.message);
-        if (result.success) {
-          document.querySelector("#tambahDosenModal .btn-close").click();
-          form.reset();
-          form.querySelector("#nip").removeAttribute("readonly");
-          document.getElementById("btnSimpanDosen").innerText = "Simpan";
-          document.getElementById("btnSimpanDosen").onclick = simpanBaru;
-          loadDosen();
-        }
-      } catch (err) {
-        alert("Gagal update: " + err.message);
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then(res => res.json())
+    .then(res => {
+      alert(res.message || (res.success ? "Berhasil" : "Gagal"));
+      if (res.success) {
+        // reset form & tutup modal
+        document.getElementById("formDosen").reset();
+        document.getElementById("user_id").value = "";
+        const modalEl = document.getElementById("tambahDosenModal");
+        const mod = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        mod.hide();
+        loadDosen();
       }
-    };
-
-    const modal = new bootstrap.Modal(document.getElementById("tambahDosenModal"));
-    modal.show();
-
-  } catch (err) {
-    alert("Terjadi kesalahan koneksi: " + err.message);
-  }
+    })
+    .catch(err => {
+      console.error("Error simpan dosen:", err);
+      alert("Terjadi error saat menyimpan. Cek console untuk detail.");
+    });
 }
 
-// HAPUS DOSEN
-async function deleteDosen(nip) {
+function hapusDosen(user_id) {
+  if (!user_id) {
+    alert("User ID tidak valid.");
+    return;
+  }
   if (!confirm("Yakin ingin menghapus dosen ini?")) return;
 
-  try {
-    const res = await fetch(`${API_BASE}/delete_dosen.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nip })
+  fetch(`${API_BASE}/delete_dosen.php`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id })
+  })
+    .then(res => res.json())
+    .then(res => {
+      alert(res.message || (res.success ? "Dihapus" : "Gagal"));
+      if (res.success) loadDosen();
+    })
+    .catch(err => {
+      console.error("Error hapus dosen:", err);
+      alert("Terjadi error saat menghapus. Cek console untuk detail.");
     });
-    const result = await res.json();
-    alert(result.message);
-    if (result.success) loadDosen();
-  } catch (err) {
-    alert("Gagal menghapus data: " + err.message);
-  }
 }
+</script>
 
-document.getElementById("btnSimpanDosen").addEventListener("click", simpanBaru);
-document.addEventListener("DOMContentLoaded", loadDosen);
-  </script>
 </body>
 </html>

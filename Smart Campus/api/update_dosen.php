@@ -1,65 +1,50 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json");
-require_once __DIR__ . "/config.php";
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(["success" => false, "message" => "Gunakan metode POST"]);
-    exit;
-}
-
-$input = json_decode(file_get_contents("php://input"), true);
-
-if (!isset($input['nip']) || !isset($input['nama']) || !isset($input['email'])) {
-    echo json_encode(["success" => false, "message" => "Data tidak lengkap"]);
-    exit;
-}
-
-$nip = trim($input['nip']);
-$nama = trim($input['nama']);
-$email = trim($input['email']);
-$matakuliah = trim($input['matakuliah'] ?? '');
-$password = trim($input['password'] ?? '');
+header("Content-Type: application/json; charset=utf-8");
+require_once "config.php";
 
 $conn = getOracleConnection();
-
 if (!$conn) {
     echo json_encode(["success" => false, "message" => "Koneksi database gagal"]);
     exit;
 }
 
+$raw = file_get_contents("php://input");
+$data = json_decode($raw, true);
+
+$user_id = $data['user_id'] ?? '';
+$username = trim($data['username'] ?? '');
+$email = trim($data['email'] ?? '');
+$prodi = trim($data['prodi'] ?? '');
+$nip = trim($data['nip'] ?? '');
+
+if ($user_id === '' || $username === '' || $email === '') {
+    echo json_encode(["success" => false, "message" => "Data tidak lengkap"]);
+    exit;
+}
+
 $sql = "UPDATE USERS
-        SET USERNAME = :nama,
+        SET USERNAME = :username,
             EMAIL = :email,
-            PRODI = :matakuliah,
-            UPDATED_AT = CURRENT_TIMESTAMP";
+            PRODI = :prodi,
+            NIM = :nip
+        WHERE USER_ID = :user_id AND ROLE = 'dosen'";
 
-if (!empty($password)) {
-    $sql .= ", PASSWORD = :password";
-}
+$stid = oci_parse($conn, $sql);
+oci_bind_by_name($stid, ":username", $username);
+oci_bind_by_name($stid, ":email", $email);
+oci_bind_by_name($stid, ":prodi", $prodi);
+oci_bind_by_name($stid, ":nip", $nip);
+oci_bind_by_name($stid, ":user_id", $user_id);
 
-$sql .= " WHERE NIM = :nip AND ROLE = 'dosen'";
-
-$stmt = oci_parse($conn, $sql);
-
-oci_bind_by_name($stmt, ":nama", $nama);
-oci_bind_by_name($stmt, ":email", $email);
-oci_bind_by_name($stmt, ":matakuliah", $matakuliah);
-oci_bind_by_name($stmt, ":nip", $nip);
-
-if (!empty($password)) {
-    oci_bind_by_name($stmt, ":password", $password);
-}
-
-$exec = oci_execute($stmt, OCI_COMMIT_ON_SUCCESS);
-
-if ($exec) {
+if (oci_execute($stid, OCI_NO_AUTO_COMMIT)) {
+    oci_commit($conn);
     echo json_encode(["success" => true, "message" => "Data dosen berhasil diperbarui"]);
 } else {
-    $e = oci_error($stmt);
-    echo json_encode(["success" => false, "message" => "Gagal update: " . $e['message']]);
+    $err = oci_error($stid);
+    echo json_encode(["success" => false, "message" => "Gagal update: " . $err['message']]);
 }
 
-oci_free_statement($stmt);
+oci_free_statement($stid);
 oci_close($conn);
 ?>

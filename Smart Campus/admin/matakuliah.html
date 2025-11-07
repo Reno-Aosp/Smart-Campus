@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mata Kuliah | Admin</title>
   <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
   <div class="d-flex">
-    <nav class="bg-info text-white p-3 vh-100" style="width: 250px;">
+    <nav class="bg-info text-white p-3 vh-100" style="width:250px;">
       <h4 class="fw-bold mb-4">SmartCampus</h4>
       <ul class="nav flex-column">
         <li class="nav-item mb-2"><a href="dashboard.html" class="nav-link text-white">🏠 Dashboard</a></li>
         <li class="nav-item mb-2"><a href="mahasiswa.html" class="nav-link text-white">🎓 Mahasiswa</a></li>
         <li class="nav-item mb-2"><a href="dosen.html" class="nav-link text-white">👨‍🏫 Dosen</a></li>
-        <li class="nav-item mb-2"><a href="matakuliah.html" class="nav-link text-white">📚 Mata Kuliah</a></li>
+        <li class="nav-item mb-2"><a href="matakuliah.html" class="nav-link text-white active fw-bold">📚 Mata Kuliah</a></li>
         <li class="nav-item mb-2"><a href="laporan.html" class="nav-link text-white">📊 Laporan</a></li>
       </ul>
       <div class="mt-auto">
@@ -28,15 +29,13 @@
         <h3 class="fw-bold text-info mb-4">📚 Mata Kuliah</h3>
         <p>Kelola data mata kuliah di sini.</p>
 
-        <!-- Tombol tambah -->
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold">Daftar Mata Kuliah</h5>
-          <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tambahMatkulModal">
+          <button class="btn btn-success btn-sm" id="btnOpenTambah">
             <i class="fa-solid fa-plus me-1"></i> Tambah Mata Kuliah
           </button>
         </div>
 
-        <!-- Tabel Mata Kuliah -->
         <div class="card shadow-sm border-0">
           <div class="card-body">
             <div class="table-responsive">
@@ -46,86 +45,240 @@
                     <th>No</th>
                     <th>Kode MK</th>
                     <th>Nama Mata Kuliah</th>
+                    <th>Program Studi</th>
                     <th>Dosen Pengampu</th>
                     <th>SKS</th>
                     <th>Semester</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td class="text-center">1</td>
-                    <td>TI301</td>
-                    <td>Pemrograman Web</td>
-                    <td>Dr. Budi Santoso</td>
-                    <td class="text-center">3</td>
-                    <td class="text-center">5</td>
-                    <td class="text-center">
-                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
-                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="text-center">2</td>
-                    <td>TI305</td>
-                    <td>Basis Data Lanjut</td>
-                    <td>Sri Wulandari, M.Kom</td>
-                    <td class="text-center">3</td>
-                    <td class="text-center">5</td>
-                    <td class="text-center">
-                      <button class="btn btn-warning btn-sm me-1"><i class="fa-solid fa-pen"></i></button>
-                      <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                  </tr>
+                <tbody id="tableMatkul">
+                  <tr><td colspan="8" class="text-center text-secondary">Memuat data...</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
 
-        <!-- Modal Tambah Mata Kuliah -->
-        <div class="modal fade" id="tambahMatkulModal" tabindex="-1" aria-labelledby="tambahMatkulLabel" aria-hidden="true">
+        <!-- Modal -->
+        <div class="modal fade" id="modalMatkul" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="tambahMatkulLabel">Tambah Mata Kuliah</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="modalTitle">Tambah Mata Kuliah</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
-                <form id="formTambahMatkul">
+                <form id="formMatkul" onsubmit="return false;">
+                  <input type="hidden" id="matkul_id">
+
                   <div class="mb-3">
-                    <label class="form-label">Kode MK</label>
-                    <input type="text" class="form-control" placeholder="Masukkan kode mata kuliah">
+                    <label class="form-label">Kode Mata Kuliah</label>
+                    <input id="kode_matkul" class="form-control" required>
                   </div>
+
                   <div class="mb-3">
                     <label class="form-label">Nama Mata Kuliah</label>
-                    <input type="text" class="form-control" placeholder="Masukkan nama mata kuliah">
+                    <input id="nama_matkul" class="form-control" required>
                   </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Program Studi</label>
+                    <select id="prodi_id" class="form-select" required>
+                      <option value="">-- Pilih Program Studi --</option>
+                    </select>
+                  </div>
+
                   <div class="mb-3">
                     <label class="form-label">Dosen Pengampu</label>
-                    <input type="text" class="form-control" placeholder="Masukkan nama dosen pengampu">
+                    <select id="dosen_id" class="form-select" required>
+                      <option value="">-- Pilih Dosen --</option>
+                    </select>
                   </div>
+
                   <div class="mb-3">
                     <label class="form-label">SKS</label>
-                    <input type="number" class="form-control" placeholder="Masukkan jumlah SKS">
+                    <input id="sks" type="number" min="0" class="form-control" required>
                   </div>
+
                   <div class="mb-3">
                     <label class="form-label">Semester</label>
-                    <input type="number" class="form-control" placeholder="Masukkan semester">
+                    <input id="semester" type="number" min="1" class="form-control" required>
                   </div>
                 </form>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Simpan</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button class="btn btn-primary" id="btnSimpan">Simpan</button>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </main>
   </div>
 
   <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script>
+  const API_BASE = "http://localhost/Smart-Campus/Smart%20Campus/api";
+
+  let modalMatkul;
+  document.addEventListener("DOMContentLoaded", () => {
+    modalMatkul = new bootstrap.Modal(document.getElementById("modalMatkul"));
+    document.getElementById("btnOpenTambah").addEventListener("click", openTambah);
+    document.getElementById("btnSimpan").addEventListener("click", simpanMatkul);
+    loadProdi();
+    loadDosen();
+    loadMatkul();
+  });
+
+  async function fetchJson(url, opts) {
+    const res = await fetch(url, opts);
+    return await res.json();
+  }
+
+  async function loadProdi() {
+    try {
+      const res = await fetchJson(`${API_BASE}/get_prodi.php`);
+      const sel = document.getElementById("prodi_id");
+      sel.innerHTML = '<option value="">-- Pilih Program Studi --</option>';
+      if (res.success && Array.isArray(res.data)) {
+        res.data.forEach(p => {
+          const o = document.createElement("option");
+          o.value = p.prodi_id;
+          o.textContent = p.nama_prodi;
+          sel.appendChild(o);
+        });
+      }
+    } catch (e) { console.error("loadProdi:", e); }
+  }
+
+  async function loadDosen() {
+    try {
+      const res = await fetchJson(`${API_BASE}/get_dosenmat.php`);
+      const sel = document.getElementById("dosen_id");
+      sel.innerHTML = '<option value="">-- Pilih Dosen --</option>';
+      if (res.success && Array.isArray(res.data)) {
+        res.data.forEach(d => {
+          const o = document.createElement("option");
+          o.value = d.dosen_id;
+          o.textContent = d.name_display;
+          sel.appendChild(o);
+        });
+      }
+    } catch (e) { console.error("loadDosen:", e); }
+  }
+
+  async function loadMatkul() {
+    try {
+      const res = await fetchJson(`${API_BASE}/get_matakuliah.php`);
+      const tbody = document.getElementById("tableMatkul");
+      tbody.innerHTML = "";
+      if (!res.success || !Array.isArray(res.data) || res.data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-secondary">Tidak ada data mata kuliah</td></tr>`;
+        return;
+      }
+      res.data.forEach((m, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="text-center">${i + 1}</td>
+          <td>${escapeHtml(m.kode_matkul)}</td>
+          <td>${escapeHtml(m.nama_matkul)}</td>
+          <td>${escapeHtml(m.prodi ?? "-")}</td>
+          <td>${escapeHtml(m.dosen_name ?? "-")}</td>
+          <td class="text-center">${m.sks}</td>
+          <td class="text-center">${m.semester}</td>
+          <td class="text-center">
+            <button class="btn btn-warning btn-sm me-1" onclick='openEdit(${m.matkul_id})'><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-danger btn-sm" onclick='hapusMatkul(${m.matkul_id})'><i class="fa-solid fa-trash"></i></button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+    } catch (e) {
+      console.error("loadMatkul:", e);
+    }
+  }
+
+  function escapeHtml(s) {
+    if (s === null || s === undefined) return "";
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function openTambah() {
+    document.getElementById("modalTitle").textContent = "Tambah Mata Kuliah";
+    document.getElementById("formMatkul").reset();
+    document.getElementById("matkul_id").value = "";
+    modalMatkul.show();
+  }
+
+  async function openEdit(id) {
+    try {
+      const res = await fetchJson(`${API_BASE}/get_matakuliah.php?id=${id}`);
+      if (!res.success || !res.data || res.data.length === 0) {
+        alert("Data tidak ditemukan");
+        return;
+      }
+      const m = res.data[0];
+      document.getElementById("modalTitle").textContent = "Edit Mata Kuliah";
+      document.getElementById("matkul_id").value = m.matkul_id;
+      document.getElementById("kode_matkul").value = m.kode_matkul;
+      document.getElementById("nama_matkul").value = m.nama_matkul;
+      document.getElementById("prodi_id").value = m.prodi_id || "";
+      document.getElementById("dosen_id").value = m.dosen_id || "";
+      document.getElementById("sks").value = m.sks || "";
+      document.getElementById("semester").value = m.semester || "";
+      modalMatkul.show();
+    } catch (e) { console.error("openEdit:", e); }
+  }
+
+  async function simpanMatkul() {
+    const id = document.getElementById("matkul_id").value.trim();
+    const payload = {
+      matkul_id: id || undefined,
+      kode_matkul: document.getElementById("kode_matkul").value.trim(),
+      nama_matkul: document.getElementById("nama_matkul").value.trim(),
+      prodi_id: document.getElementById("prodi_id").value.trim(),
+      dosen_id: document.getElementById("dosen_id").value.trim(),
+      sks: document.getElementById("sks").value.trim(),
+      semester: document.getElementById("semester").value.trim()
+    };
+    if (!payload.kode_matkul || !payload.nama_matkul || !payload.prodi_id) {
+      alert("Lengkapi Kode, Nama, dan Program Studi.");
+      return;
+    }
+    const url = id ? `${API_BASE}/update_matakuliah.php` : `${API_BASE}/tambah_matakuliah.php`;
+    try {
+      const res = await fetchJson(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+      });
+      alert(res.message || (res.success ? "Berhasil" : "Gagal"));
+      if (res.success) {
+        modalMatkul.hide();
+        loadMatkul();
+      }
+    } catch (e) { console.error("simpanMatkul:", e); alert("Terjadi error."); }
+  }
+
+  async function hapusMatkul(id) {
+    if (!confirm("Yakin ingin menghapus mata kuliah ini?")) return;
+    try {
+      const res = await fetchJson(`${API_BASE}/delete_matakuliah.php`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ matkul_id: id })
+      });
+      alert(res.message || (res.success ? "Berhasil" : "Gagal"));
+      if (res.success) loadMatkul();
+    } catch (e) { console.error("hapusMatkul:", e); alert("Terjadi error."); }
+  }
+</script>
+
 </body>
 </html>

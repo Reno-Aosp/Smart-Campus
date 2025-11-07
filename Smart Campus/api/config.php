@@ -1,15 +1,13 @@
 <?php
-// config.php
-
-define('DB_USER', 'uas2');
-define('DB_PASS', 'uas2');
-define('DB_CONN', 'localhost/orcl');
-
 function getOracleConnection() {
-    $conn = oci_connect(DB_USER, DB_PASS, DB_CONN);
+    $username = "uas2";
+    $password = "uas2";
+    $connectionString = "localhost/orcl";
+
+    $conn = oci_connect($username, $password, $connectionString);
     if (!$conn) {
         $e = oci_error();
-        die("Koneksi gagal: " . $e['message']);
+        throw new Exception("Gagal konek ke Oracle: " . $e['message']);
     }
     return $conn;
 }

@@ -77,7 +77,10 @@ CREATE TABLE users (
     is_active NUMBER(1) DEFAULT 1 CHECK (is_active IN (0, 1)),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP
+    last_login TIMESTAMP,
+    nim VARCHAR2(50),
+    kelas VARCHAR2(50),
+    prodi VARCHAR2(100)
 );
 
 -- =====================================================

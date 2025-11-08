@@ -1,0 +1,96 @@
+SELECT * FROM USERS;
+SELECT * FROM MAHASISWA;
+SELECT * FROM MATA_KULIAH;
+SELECT * FROM ABSENSI;
+SELECT * FROM DOSEN;
+SELECT * FROM PROGRAM_STUDI;
+SELECT * FROM UAS2.DOSEN;
+SELECT COUNT(*) AS CNT FROM users WHERE username = :username OR nim = :nim
+
+
+
+DESC MATA_KULIAH;
+DESC DOSEN;
+
+SELECT DOSEN_ID, NAMA_LENGKAP FROM DOSEN;
+SELECT * FROM DOSEN WHERE DOSEN_ID = '1';
+
+SELECT constraint_name, table_name, r_constraint_name
+FROM user_constraints
+WHERE table_name = 'MATA_KULIAH' AND constraint_type = 'R';
+
+SELECT
+    a.constraint_name,
+    a.table_name AS child_table,
+    a.column_name AS child_column,
+    c_pk.table_name AS parent_table,
+    b.column_name AS parent_column
+FROM all_cons_columns a
+JOIN all_constraints c ON a.owner = c.owner AND a.constraint_name = c.constraint_name
+JOIN all_constraints c_pk ON c.r_owner = c_pk.owner AND c.r_constraint_name = c_pk.constraint_name
+JOIN all_cons_columns b ON c_pk.constraint_name = b.constraint_name AND b.position = a.position
+WHERE c.constraint_type = 'R'
+  AND a.table_name = 'MATA_KULIAH'
+  AND a.constraint_name = 'FK_MATKUL_DOSEN';
+  
+SELECT DOSEN_ID, NAMA_LENGKAP FROM DOSEN WHERE DOSEN_ID IN (1,2);
+
+INSERT INTO MATA_KULIAH (KODE_MATKUL, NAMA_MATKUL, SKS, SEMESTER, PRODI_ID, DOSEN_ID)
+VALUES ('TEST123', 'Tes FK', 3, 1, 1, 1);
+
+DELETE FROM MATA_KULIAH WHERE MATKUL_ID = '17';
+DELETE FROM USERS WHERE user_id = '4';
+DELETE FROM DOSEN WHERE DOSEN_ID = '1';
+
+ALTER SESSION SET CURRENT_SCHEMA = UAS2;
+
+SELECT * FROM UAS2.DOSEN;
+SELECT OWNER, TABLE_NAME, R_OWNER, R_TABLE_NAME FROM ALL_CONSTRAINTS WHERE CONSTRAINT_NAME = 'FK_MATKUL_DOSEN';
+
+SELECT 
+    a.owner AS fk_owner,
+    a.table_name AS fk_table,
+    a.constraint_name,
+    c.owner AS pk_owner,
+    c.table_name AS pk_table
+FROM all_constraints a
+JOIN all_constraints c ON a.r_constraint_name = c.constraint_name
+WHERE a.constraint_name = 'FK_MATKUL_DOSEN';
+
+-- Untuk tabel USERS
+CREATE SEQUENCE USERS_SEQ
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE;
+
+-- Untuk tabel MAHASISWA
+CREATE SEQUENCE MAHASISWA_SEQ
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE;
+  
+CREATE SYNONYM seq_users FOR USERS_SEQ;
+CREATE SYNONYM seq_mahasiswa FOR MAHASISWA_SEQ;
+
+CREATE SEQUENCE users_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE mahasiswa_seq START WITH 1 INCREMENT BY 1;
+
+SELECT constraint_name, table_name, search_condition
+FROM all_constraints
+WHERE constraint_name = 'SYS_C0013899';
+
+-- Sequence untuk tabel USERS (kalau belum ada)
+CREATE SEQUENCE SEQ_USERS
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+-- Sequence untuk tabel DOSEN
+CREATE SEQUENCE SEQ_DOSEN
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+
